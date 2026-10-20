@@ -60,7 +60,7 @@ public final class MemberManager {
                 InviteManager.deleteInvitesOfPlayer(linkageId, player);
 
                 if (getFlagsConfig().allowFlagsOnPlayerTrust()) {
-                    member.setPlayerFlags(getFlagsConfig().getAllAllowedPlayerFlagsExcludeDisabledOnes());
+                    member.setPlayerFlags(getDefaultTrustedPlayerFlags());
                 } else {
                     Region region = RegionManager.findRegion(linkageId);
 
@@ -69,7 +69,7 @@ public final class MemberManager {
             }
             case SUBAREA -> {
                 if (getFlagsConfig().allowFlagsOnPlayerTrust()) {
-                    member.setPlayerFlags(getFlagsConfig().getAllAllowedPlayerFlagsExcludeDisabledOnes());
+                    member.setPlayerFlags(getDefaultTrustedPlayerFlags());
                 } else {
                     SubArea subArea = SubAreaManager.findSubArea(linkageId);
 
@@ -81,6 +81,22 @@ public final class MemberManager {
         Homestead.MEMBER_CACHE.putOrUpdate(member);
 
         return member;
+    }
+
+    /**
+     * Computes the default player flags for a newly trusted member.
+     * <p>
+     * Uses the {@code default-trusted-players-flags} section from {@code flags.yml}.
+     * Falls back to every non-disabled flag when the section is missing or empty
+     * (config files created before this section existed).
+     *
+     * @return the default trusted player flags bitmask
+     */
+    private static long getDefaultTrustedPlayerFlags() {
+        long defaults = getFlagsConfig().getDefaultTrustedPlayerFlags();
+        return defaults != 0L
+                ? defaults
+                : getFlagsConfig().getAllAllowedPlayerFlagsExcludeDisabledOnes();
     }
 
     /**
