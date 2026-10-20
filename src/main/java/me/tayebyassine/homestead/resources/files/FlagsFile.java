@@ -70,6 +70,31 @@ public final class FlagsFile extends ResourceFile {
     }
 
     /**
+     * Computes the bitmask of default trusted (member) player flags defined in the config.
+     * <p>
+     * Returns {@code 0L} when the {@code default-trusted-players-flags} section is
+     * missing or empty (e.g. on config files created before this section existed),
+     * so callers can fall back to a legacy default.
+     *
+     * @return combined default trusted player flags, or {@code 0L} if none are set
+     */
+    public long getDefaultTrustedPlayerFlags() {
+        List<String> keys = getKeysUnderPath("default-trusted-players-flags");
+        long flags = 0L;
+
+        for (String key : keys) {
+            if (getBoolean("default-trusted-players-flags." + key)) {
+                try {
+                    flags = FlagCalculator.addFlag(flags, PlayerFlag.parse(key));
+                } catch (IllegalArgumentException ignored) {
+                    // Skip silently
+                }
+            }
+        }
+        return flags;
+    }
+
+    /**
      * Computes the bitmask of every player flag that is <em>not</em> disabled.
      *
      * @return combined allowed player flags

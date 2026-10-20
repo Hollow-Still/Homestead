@@ -273,18 +273,32 @@ Use the [Homestead Flags Calculator](https://tayebyassine.github.io/HomesteadFla
 
     These world rules flags are ignored: `liquid-flow`, `wilderness-dispensers`, `wilderness-pistons`, `wilderness-minecarts`
 
-## Allow All Flags for Trusted Players
+## Default Flags for Trusted Players
 
-When a player joins a region as a trusted member, automatically allow all player flags for them.
+When a player joins a region (or sub-area) as a trusted member, they receive the player flags defined in the `default-trusted-players-flags` section of `flags.yml`.
 
 ```yaml
 # In flags.yml
 flags-configuration:
   allow-all-flags-for-trusted-players: true
+
+# New trusted members start with these flags
+default-trusted-players-flags:
+  break-blocks: true
+  place-blocks: true
+  passthrough: true
+  pvp: false
+  # ... every player flag can be listed here
 ```
 
-- **true** (default): Trusted members get all player flags allowed on join
-- **false**: Trusted members start with the region's default flag states
+- **true** (default): Trusted members start with the `default-trusted-players-flags` values on join. If that section is missing or empty, they get every flag that is not disabled
+- **false**: Trusted members start with the region's non-member flag states
+
+!!! note
+
+    Flags listed in `disabled-flags` are excluded from the "every non-disabled flag" fallback only. If you list a flag in `default-trusted-players-flags`, its value is applied as-is even when the flag is disabled (disabled only prevents *changing* the flag afterwards).
+
+    Region owners can still adjust each member's flags individually with `/hs flags member [player] [flag] [allow/deny]` (unless the flag is disabled).
 
 ## Spawner Exclusion
 

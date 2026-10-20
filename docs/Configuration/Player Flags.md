@@ -56,5 +56,6 @@ The **Bit** column is the flag's individual bitwise value; use the [Homestead Fl
 - **Global (non-members)**: `/hs flags global [flag] [allow/deny]`
 - **Per member**: `/hs flags member [player] [flag] [allow/deny]`
 - **Defaults for new regions**: edit `default-players-flags` in `flags.yml`
+- **Defaults for new trusted members**: edit `default-trusted-players-flags` in `flags.yml`
 
 See [Flags Overview](Flags%20Overview.md) for the full workflow, and [Disabled Flags](Disabled%20Flags.md) to lock a flag so nobody can change it.

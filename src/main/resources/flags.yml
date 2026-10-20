@@ -18,8 +18,9 @@ flags-configuration:
   # true = Yes, false = No
   exclude-spawners: true
 
-  # Allow all flags for trusted players once they join a region?
-  # true = Yes, false = No
+  # Apply the default trusted player flags (see default-trusted-players-flags below)
+  # once a player joins a region as trusted?
+  # true = Yes, false = No (they start with the region's non-member flags instead)
   allow-all-flags-for-trusted-players: true
 
 # ============================================================================
@@ -70,6 +71,50 @@ default-players-flags:
   elytra: true                   # Elytra flight
   spawn-entities: false          # Use spawn eggs
   throw-eggs: false              # Throw eggs
+
+# Default Trusted Player Flags (Members)
+# The default values for players who are trusted to a region or sub-area
+# Players can change these (unless flag is disabled above)
+# true = Allow, false = Deny
+# Note: If this section is missing/empty, trusted players get all flags that are not disabled
+default-trusted-players-flags:
+  break-blocks: true             # Break/destroy blocks
+  place-blocks: true             # Place blocks
+  containers: true               # Open chests, barrels, shulker boxes
+  doors: true                    # Open/close doors
+  trap-doors: true               # Open/close trapdoors
+  fence-gates: true              # Open/close fence gates
+  use-anvil: true                # Use anvils
+  redstone: true                 # Interact with redstone components
+  levers: true                   # Use levers
+  buttons: true                  # Press buttons
+  pressure-plates: true          # Trigger pressure plates
+  use-bells: true                # Ring bells
+  trigger-tripwire: true         # Activate tripwires
+  frost-walker: true             # Use frost walker boots
+  harvest-crops: true            # Harvest/break crops
+  block-trampling: true          # Trample farmland/turtle eggs
+  general-interaction: true      # General interaction catch-all
+  armor-stands: true             # Remove armor from armor stands
+  interact-entities: true        # Interact with entities
+  item-frame-interaction: true   # Add/remove items from item frames
+  damage-passive-entities: true  # Kill passive mobs
+  damage-hostile-entities: true  # Kill hostile mobs
+  trade-villagers: true          # Trade with villagers
+  ignite: true                   # Start fires with flint and steel
+  vehicles: true                 # Ride minecarts, horses, boats
+  teleport-spawn: true           # Teleport to region spawn
+  passthrough: true              # Enter/move through region (false = private)
+  pvp: false                     # PvP combat
+  take-fall-damage: true         # Fall damage (false for parkour)
+  teleport: true                 # Ender pearls/chorus fruit
+  throw-potions: true            # Splash/lingering potions
+  pickup-items: true             # Pick up dropped items
+  sleep: true                    # Use beds
+  trigger-raid: false            # Start raids with Bad Omen
+  elytra: true                   # Elytra flight
+  spawn-entities: true           # Use spawn eggs
+  throw-eggs: true               # Throw eggs
 
 # World/Environment Flags
 # Controls environmental effects and mob behavior
