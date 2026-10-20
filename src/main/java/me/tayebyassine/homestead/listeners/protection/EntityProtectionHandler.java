@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.event.raid.RaidTriggerEvent;
+import org.bukkit.event.world.EntitiesLoadEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
@@ -101,6 +102,24 @@ public final class EntityProtectionHandler extends ProtectionHandler implements 
     public void onEntitySpawn(EntitySpawnEvent event) {
         if (event.getEntity() instanceof CopperGolem golem) {
             CopperGolemTracker.recordSpawnRegion(golem);
+        }
+    }
+
+    /**
+     * Entities restored from chunk data do not fire {@link EntitySpawnEvent}, so without
+     * this hook golems loaded after a server restart would have no recorded spawn region
+     * and be treated as wild mobs by the Copper Golem item-transport checks.
+     *
+     * <p>On Folia this event fires on the region thread that owns the chunk, making it
+     * the thread-safe replacement for the startup entity scan (which cannot safely call
+     * {@code world.getEntities()} from the global region scheduler).</p>
+     */
+    @EventHandler
+    public void onEntitiesLoad(EntitiesLoadEvent event) {
+        for (Entity entity : event.getEntities()) {
+            if (entity instanceof CopperGolem golem) {
+                CopperGolemTracker.recordSpawnRegion(golem);
+            }
         }
     }
 
