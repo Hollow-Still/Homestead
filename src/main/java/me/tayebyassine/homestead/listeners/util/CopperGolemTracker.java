@@ -17,18 +17,23 @@ public final class CopperGolemTracker {
         throw new AssertionError("Uninstantiable class");
     }
 
+    /**
+     * Records the region that owned the golem's spawn chunk. A golem without a claimed
+     * spawn region is simply left absent from the map — {@link ConcurrentHashMap} does
+     * not permit null values, and callers already treat an absent entry as "wild".
+     */
     public static void recordSpawnRegion(CopperGolem golem) {
         Chunk spawnChunk = golem.getLocation().getChunk();
 
+        Region region = null;
         if (ChunkManager.isChunkClaimed(spawnChunk)) {
-            Region region = ChunkManager.getRegionOwnsTheChunk(spawnChunk);
-            if (region != null) {
-                GOLEM_SPAWN_REGION.put(golem.getUniqueId(), region.getUniqueId());
-            } else {
-                GOLEM_SPAWN_REGION.put(golem.getUniqueId(), null);
-            }
+            region = ChunkManager.getRegionOwnsTheChunk(spawnChunk);
+        }
+
+        if (region != null) {
+            GOLEM_SPAWN_REGION.put(golem.getUniqueId(), region.getUniqueId());
         } else {
-            GOLEM_SPAWN_REGION.put(golem.getUniqueId(), null);
+            GOLEM_SPAWN_REGION.remove(golem.getUniqueId());
         }
     }
 
