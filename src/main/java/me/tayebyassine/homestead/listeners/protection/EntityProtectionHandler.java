@@ -5,6 +5,7 @@ import me.tayebyassine.homestead.flags.WorldFlag;
 import me.tayebyassine.homestead.flags.WorldRules;
 import me.tayebyassine.homestead.listeners.util.CopperGolemTracker;
 import me.tayebyassine.homestead.listeners.util.Explosives;
+import me.tayebyassine.homestead.logs.Logger;
 import me.tayebyassine.homestead.managers.ChunkManager;
 import me.tayebyassine.homestead.models.Region;
 import me.tayebyassine.homestead.resources.ResourceType;
@@ -427,11 +428,35 @@ public final class EntityProtectionHandler extends ProtectionHandler implements 
 
         Runnable cancel = () -> event.setCancelled(true);
 
+        if (hasPlayerPassenger(entity)) {
+            return;
+        }
+
         if (entity instanceof Monster || entity instanceof IronGolem) {
             checkWorldFlag(chunk, WorldFlag.HOSTILE_ENTITY_SPAWN, cancel);
         } else if (entity instanceof Mob) {
+            // A mount restored for a player on login (horse, pig, happy ghast, etc.)
+            // fires CreatureSpawnEvent with SpawnReason.MOUNT, and the rider is only
+            // attached as a passenger after the spawn event completes — so cancelling
+            // it here would delete the entity out from under the player when they
+            // rejoin. Player mounts are therefore exempt from the spawn flag.
+            if (spawnReason == CreatureSpawnEvent.SpawnReason.MOUNT || hasPlayerPassenger(entity)) {
+                Logger.debug("CreatureSpawn (mount restore):", entity.getType(),
+                        "reason=" + spawnReason, "claimed=" + ChunkManager.isChunkClaimed(chunk));
+                return;
+            }
+
             checkWorldFlag(chunk, WorldFlag.PASSIVE_ENTITY_SPAWN, cancel);
         }
+    }
+
+    private static boolean hasPlayerPassenger(Entity entity) {
+        for (Entity passenger : entity.getPassengers()) {
+            if (passenger instanceof Player) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
