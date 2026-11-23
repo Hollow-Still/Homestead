@@ -144,7 +144,6 @@ public final class PlayerActionHandler extends ProtectionHandler implements List
         Location location = relative.getLocation();
         Runnable cancel = () -> event.setCancelled(true);
 
-
         checkPlayerFlag(event.getPlayer(), location.getChunk(), location,
                 PlayerFlag.BREAK_BLOCKS, cancel);
     }
