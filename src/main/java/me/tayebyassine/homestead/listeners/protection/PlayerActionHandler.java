@@ -135,6 +135,11 @@ public final class PlayerActionHandler extends ProtectionHandler implements List
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+        // Milking is already checked by the entity interaction handler.
+        if (event.getItemStack() != null && event.getItemStack().getType() == Material.MILK_BUCKET) {
+            return;
+        }
+        
         Block relative = event.getBlockClicked().getRelative(event.getBlockFace());
         Location location = relative.getLocation();
         Runnable cancel = () -> event.setCancelled(true);
